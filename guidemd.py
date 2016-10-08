@@ -257,9 +257,14 @@ class CcRenderer(Renderer):
         
         if matchObj is None: 
             if ((len(src) > 0) and (src[0] != '/')):
-                src = urlparse.urljoin(app.config['KM_STATIC'], posixpath.join( "images",src))
+                #src = urlparse.urljoin(app.config['KM_STATIC'], posixpath.join( "images",src))
+                #TODO
+                src = ""
             else: 
-                src = urlparse.urljoin(app.config['KM_STATIC'], src[1:])
+                #src = urlparse.urljoin(app.config['KM_STATIC'], src[1:])
+                #TODO
+                src = ""
+                
                 
         text = escape(alt_text, quote=True)
         if title:
