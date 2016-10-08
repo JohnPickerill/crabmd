@@ -100,7 +100,6 @@ class CcMarkdown(Markdown):
 
  
     def __init__(self, hn="_drop", renderer=None, inline=None, block=None, **kwargs):
-        logger_m.debug("markdown initialise " + hn)
         self.hn = hn
         renderer = CcRenderer(hn)
         inline = CcInlineLexer(renderer)
@@ -119,7 +118,6 @@ class CcRenderer(Renderer):
 
     
     def __init__(self, hn="hdx" , **kwargs):
-        logger_m.debug("renderer initialise " + hn)
         self.hn = hn
         super(CcRenderer,self).__init__(**kwargs)
  
@@ -212,9 +210,8 @@ class CcRenderer(Renderer):
         :param title: title content for `title` attribute.
         :param text: text content for description.
         """  
-        logger_m.debug(link)    
+ 
         link = escape_link(link)
-        logger_m.debug(link)
         matchObj= _reUrl.match(link)
         
         # If its a bare word then its an article to be rendered in the current browser tab
@@ -243,7 +240,7 @@ class CcRenderer(Renderer):
         :param text: alt text of the image.
         """
         #TODO whats this about looks like it will fail the routine
-        logger_m.debug("my image *******")        
+ 
         if src.startswith('javascript:'):
             src = ''
         
