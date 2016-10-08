@@ -222,8 +222,8 @@ class CcRenderer(Renderer):
             if ((len(link) > 0) and (link[0] != '/')):
                 return htmlArticleLink(link.strip(),text) 
             else: 
-                link = urlparse.urljoin(app.config['KM_STATIC'], link[1:])
-            
+                #link = urlparse.urljoin(app.config['KM_STATIC'], link[1:])
+                #TODO
         if not title:
             return '<a target="_blank" href="%s">%s</a>' % (link, text)
         title = escape(title, quote=True)
