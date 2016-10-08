@@ -17,7 +17,7 @@ __all__ = [
     'markdown', 'escape',
 ]
     
-class CcMarkdown(mistune.Markdown):
+class Markdown(mistune.Markdown):
     def __init__(self, hn="_drop", renderer=None, inline=None, block=None, **kwargs):
         super(CcMarkdown, self).__init__(renderer=renderer, inline=inline, block=block, **kwargs)          
 
@@ -32,7 +32,7 @@ def markdown(text, escape=True, **kwargs):
     :param parse_block_html: parse text only in block level html.
     :param parse_inline_html: parse text only in inline level html.
     """
-    return CcMarkdown(escape=escape, **kwargs)(text) 
+    return Markdown(escape=escape, **kwargs)(text) 
         
 
 
