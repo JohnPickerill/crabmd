@@ -17,7 +17,7 @@ __all__ = [
     'markdown', 'escape',
 ]
     
-class CcMarkdown(Markdown):
+class CcMarkdown(mistune.Markdown):
     def __init__(self, hn="_drop", renderer=None, inline=None, block=None, **kwargs):
         super(CcMarkdown, self).__init__(renderer=renderer, inline=inline, block=block, **kwargs)          
 
