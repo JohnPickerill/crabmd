@@ -224,6 +224,7 @@ class CcRenderer(Renderer):
             else: 
                 #link = urlparse.urljoin(app.config['KM_STATIC'], link[1:])
                 #TODO
+                link = ""
         if not title:
             return '<a target="_blank" href="%s">%s</a>' % (link, text)
         title = escape(title, quote=True)
