@@ -21,22 +21,24 @@ class Markdown(mistune.Markdown):
     def __init__(self, renderer=None, inline=None, block=None, **kwargs):
         super(Markdown, self).__init__(renderer=renderer, inline=inline, block=block, **kwargs)          
 
-class InlineGrammar(mistune.InlineGrammar): 
+#class InlineGrammar(mistune.InlineGrammar):
+    
 
-class InlineLexer(mistune.InlineLexer):        
+class InlineLexer(mistune.InlineLexer):      
+    default_rules = copy.copy(mistune.InlineLexer.default_rules)
     def __init__(self, renderer, rules=None, **kwargs):
         if rules is None:
             # use the inline grammar
-            rules = InlineGrammar()					
+            rules = mistune.InlineGrammar()					
         super(InlineLexer, self).__init__(renderer, rules, **kwargs) 
         
-class BlockGrammar(mistune.BlockGrammar):
+#class BlockGrammar(mistune.BlockGrammar):
         
 class BlockLexer(mistune.BlockLexer):
     def __init__(self,  rules=None, **kwargs):
         if rules is None:
             # use the inline grammar
-            rules = BlockGrammar()
+            rules = mistune.BlockGrammar()
         super(BlockLexer, self).__init__(rules, **kwargs)    
   
 def markdown(text, escape=True, **kwargs):
