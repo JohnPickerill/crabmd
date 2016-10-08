@@ -21,6 +21,15 @@ class Markdown(mistune.Markdown):
     def __init__(self, renderer=None, inline=None, block=None, **kwargs):
         super(Markdown, self).__init__(renderer=renderer, inline=inline, block=block, **kwargs)          
 
+class Renderer(mistune.Renderer):
+    hn = "hd"
+    hi = 0
+
+    def __init__(self, hn="hdx" , **kwargs):
+        self.hn = hn
+        super(Renderer,self).__init__(**kwargs)
+         
+        
 class InlineGrammar(mistune.InlineGrammar):
     x = "l2"
 
