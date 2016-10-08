@@ -10,7 +10,14 @@ import posixpath
 span_class = {}
 blk_class = {}
 
-mu_version = "2.6.5"
+__version__ = '0.0.0'
+__author__ = 'John Pickerill <me@curiouscrab.com>'
+__all__ = [
+    'BlockGrammar', 'BlockLexer',
+    'InlineGrammar', 'InlineLexer',
+    'Renderer', 'Markdown',
+    'markdown', 'escape',
+]
 
         # TODO should switch to 'https?:\/\/[^\s\/$.?#].[^\s]*$ as the one below fails www.english-heritage.uk
         #'https://mathiasbynens.be/demo/url-regex    
@@ -34,8 +41,8 @@ def htmlSnippet(snipType,snipId,text):
     + '">[snip:' + snipType + ':' + snipId +'] </span>')
 
 
-def muVer():
-    return mu_version
+#def muVer():
+#    return mu_version
 
 
 
