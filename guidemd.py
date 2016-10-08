@@ -2,7 +2,6 @@ import copy
 import re 
 import mistune
 from mistune import Markdown, Renderer, InlineGrammar, InlineLexer, BlockGrammar, BlockLexer, escape, escape_link 
-from application import app, logger_m
 import urlparse
 import posixpath  
 
