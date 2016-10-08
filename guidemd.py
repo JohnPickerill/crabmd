@@ -3,7 +3,6 @@ import re
 import mistune
 from mistune import Markdown, Renderer, InlineGrammar, InlineLexer, BlockGrammar, BlockLexer, escape, escape_link 
 from application import app, logger_m
-from flask import url_for
 import urlparse
 import posixpath  
 
@@ -23,7 +22,8 @@ def htmlArticleLink(articleId,text):
     #TODO think about generalising this to call other services
     logger_m.debug(articleId)
     # url_for does autoescaping - seems like no way to disable this
-    str = '<a  target="_top" href ="' + url_for("displayArticle",itemid = articleId).replace('%23','#') +'">' + text + '</a>'
+    #str = '<a  target="_top" href ="' + url_for("displayArticle",itemid = articleId).replace('%23','#') +'">' + text + '</a>'
+    str = ""
     logger_m.debug(str)
     return str
 
@@ -31,7 +31,7 @@ def htmlArticleLink(articleId,text):
 def htmlSnippet(snipType,snipId,text):
     return ('<span class= "cc-snip"' 
     + ' data-type = "' + snipType 
-    + '" data-url = "' + url_for("displaySnip", id = snipId, type=snipType) 
+    #+ '" data-url = "' + url_for("displaySnip", id = snipId, type=snipType) 
     + '">[snip:' + snipType + ':' + snipId +'] </span>')
 
 
@@ -39,16 +39,7 @@ def muVer():
     return mu_version
 
 
-#def output_hotdrop(self):
-#    hn = hotdropIndex(self)
-#    renderer = CcRenderer(hn)
-#    logger_m.debug("initialise hotdrop renderer " + hn)
-#    inline = CcInlineLexer(renderer)
-# 
-#    #TODO nested hotdrops need to look at global hi variable and also making this thread safe
-#    md = mistune.Markdown(renderer=renderer, inline=inline)
-#    cnt =  md(self.token['text']) 
-#    return self.renderer.hotdrop(self.token['title'],self.token['level'],self.token['option'],cnt);
+
 
 def output_drop(self):
     hdInd = hotdropIndex(self)
@@ -155,29 +146,7 @@ class CcRenderer(Renderer):
         print "render box:"
         return '<pre><jpc>' + text + '<jpc></pre>'       
         
-#    def hotdrop (self,title,level,option,text):
-#        hdInd = hotdropIndex(self)
-#       
-#        if level == 0: 
-#            stag = '<p>'
-#            etag = '</p>'
-#        else:
-#            stag ='<h' + str(level) + ' class="cc-drop-title">'
-#            etag = '</h' + str(level) + ' >'    
-#         
-#        if option != "":            
-#            options = "accordion cc-drop-%s" % (option)
-#        else:
-#            options = "accordion" 
-#        #TODO need to convert hotdrop body not just pass it through    
-# 
-#        hd = '<div class="%s" id="info%s">\n<div class="accordion-group ">\n<div class="cc-drop-head">\n'  %(options,hdInd )  
-#        hd += '%s<a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#info%s" href="#collapse%s">\n' %(stag,hdInd,hdInd) 
-#        hd += '%s</a>%s</div>\n'  % (title,etag)
-#        hd += '<div id="collapse%s" class="accordion-body collapse">\n<div class="accordion-inner cc-drop-body">\n%s' %(hdInd, text)
-#        hd += '</div></div></div></div>\n <!--hd end-->'  
-#
-#        return hd
+
 
 
     def drop (self,hdInd,title,level,option,text):
@@ -450,18 +419,7 @@ class CcBlockLexer(BlockLexer):
 
     def parse_table(self, m):
         item = self._process_table(m)
-        #JP fix for blank last cell in table
-        #rmat = re.match(r'^(.*)(?<=\|)(.*)\|\s*\n?$',m.group(3),re.S)
-        #if  rmat:
-        #    if rmat.group(2).strip() == '':
-        #        cells = rmat.group(1) +'|'
-        #    else:               
-        #        cells = rmat.group(1) + rmat.group(2) 
-        #else:
-        #    cells = re.sub(r'(?: *\| *)?\n$', '', m.group(3))
-        #original
-        #cells = re.sub(r'(?: *\| *)?\n$', '', m.group(3))
-        #logger_m.debug(cells)
+
         cells = re.sub(r' *\n$', '', m.group(3))
         cells = cells.split('\n')
         for i, v in enumerate(cells):
@@ -471,30 +429,19 @@ class CcBlockLexer(BlockLexer):
         item['cells'] = cells
         self.tokens.append(item)
 
- 
+def markdown(text, escape=True, **kwargs):
+    """Render markdown formatted text to html.
+
+    :param text: markdown formatted text content.
+    :param escape: if set to False, all html tags will not be escaped.
+    :param use_xhtml: output with xhtml tags.
+    :param hard_wrap: if set to True, it will use the GFM line breaks feature.
+    :param parse_block_html: parse text only in block level html.
+    :param parse_inline_html: parse text only in inline level html.
+    """
+    return CcMarkdown(escape=escape, **kwargs)(text) 
         
-    #def parse_hotdrop(self, m):
-    #    src = m.group(0)
-    #    
-    #    if ((len(m.group(2)) > 0 ) and (len(m.group(3)) > 0)):
-    #        textstr = (m.group(3))
-    #        #TODO pre compile this 
-    #        r = re.compile(r'^ *(#{1,6}) *([^\n]+?) *#* *(?:\n+|$)')
-    #        capt = r.match(m.group(2))
-    #        level = 0
-    #        title = m.group(2)
-    #        if capt:
-    #            level = len(capt.group(1))
-    #            title = capt.group(2)
-    #                    
-# 
-#            self.tokens.append({
-#                'type': 'hotdrop',
-#                'option': m.group(1),
-#                'level': level,
-#                'title': title,
-#                'text': textstr
-#            })        
+
 
         
         

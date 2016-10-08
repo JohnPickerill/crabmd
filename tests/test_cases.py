@@ -1,11 +1,11 @@
 
 import os
 import re
-import guidemd
+import guidemd as mistune
 root = os.path.dirname(__file__)
 
 known = []
-m = guidemmd.CcMarkdown()
+m = mistune.Markdown()
 
 
 def render(folder, name):

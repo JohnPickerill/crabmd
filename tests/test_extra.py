@@ -1,4 +1,4 @@
-import mistune
+import guidemd as mistune
 
 
 def test_escape():

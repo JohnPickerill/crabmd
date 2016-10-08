@@ -3,7 +3,7 @@
 import os
 import re
 import copy
-import mistune
+import guidemd as mistune
 
 root = os.path.dirname(__file__)
 

@@ -96,7 +96,7 @@ def run_setup(with_binary):
         url='https://github.com/JohnPickerill/guidemd',
         author='John Pickerill',
         author_email='me@curiouscrab.com',
-        description='The fastest markdown parser in pure Python',
+        description='Extebtion to lepture/mistune markdown parser in pure Python',
         long_description=fread('README.rst'),
         license='BSD',
         py_modules=['guidemd'],
