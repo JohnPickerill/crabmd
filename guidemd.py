@@ -101,14 +101,13 @@ class CcMarkdown(Markdown):
  
     def __init__(self, hn="_drop", renderer=None, inline=None, block=None, **kwargs):
         self.hn = hn
-        renderer = CcRenderer(hn)
-        inline = CcInlineLexer(renderer)
-        block = CcBlockLexer()
-        #Markdown.output_hotdrop = output_hotdrop
-        Markdown.output_drop = output_drop
-        Markdown.output_blk = output_blk
-        Markdown.output_item = output_item
-        Markdown.output_box = output_box
+        #renderer = CcRenderer(hn)
+        #inline = CcInlineLexer(renderer)
+        #block = CcBlockLexer()
+        #Markdown.output_drop = output_drop
+        #Markdown.output_blk = output_blk
+        #Markdown.output_item = output_item
+        #Markdown.output_box = output_box
         super(CcMarkdown, self).__init__(renderer=renderer, inline=inline, block=block, **kwargs)          
 
 		
