@@ -19,7 +19,7 @@ __all__ = [
     
 class Markdown(mistune.Markdown):
     def __init__(self, hn="_drop", renderer=None, inline=None, block=None, **kwargs):
-        super(CcMarkdown, self).__init__(renderer=renderer, inline=inline, block=block, **kwargs)          
+        super(Markdown, self).__init__(renderer=renderer, inline=inline, block=block, **kwargs)          
 
 
 def markdown(text, escape=True, **kwargs):
