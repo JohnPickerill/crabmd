@@ -3,7 +3,7 @@
 import os
 import re
 import copy
-import guidemd as mistune
+import crabmd as mistune
 
 root = os.path.dirname(__file__)
 

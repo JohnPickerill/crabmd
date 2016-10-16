@@ -1,7 +1,7 @@
 
 import os
 import re
-import guidemd as mistune
+import crabmd as mistune
 root = os.path.dirname(__file__)
 
 known = []

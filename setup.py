@@ -8,7 +8,7 @@ try:
 except ImportError:
     pass
 
-import guidemd
+import crabmd
 from setuptools import setup, Extension
 
 cmdclass = {}
@@ -91,15 +91,15 @@ def fread(filepath):
 def run_setup(with_binary):
     ext_modules = [Extension('guidemd', ['guidemd.py'])] if with_binary else []
     setup(
-        name='guidemd',
-        version=guidemd.__version__,
-        url='https://github.com/JohnPickerill/guidemd',
+        name='crabmd',
+        version=crabmd.__version__,
+        url='https://github.com/JohnPickerill/crabmd',
         author='John Pickerill',
         author_email='me@curiouscrab.com',
         description='Extension to lepture/mistune markdown parser in pure Python',
         long_description=fread('README.rst'),
         license='BSD',
-        py_modules=['guidemd'],
+        py_modules=['crabmd'],
         cmdclass=cmdclass,
         ext_modules=ext_modules,
         zip_safe=False,

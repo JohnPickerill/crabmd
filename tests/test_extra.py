@@ -1,4 +1,4 @@
-import guidemd as mistune
+import crabmd as mistune
 
 
 def test_escape():
