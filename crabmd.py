@@ -44,7 +44,7 @@ def output_drop(self):
     hdInd = hotdropIndex(self)
     if ((self.token['hdInd'] is None) or (not self.token['hdInd'].startswith("_") )):
         self.token['hdInd'] = hdInd
-    md = CcMarkdown(self.token['hdInd'])
+    md = Markdown(self.token['hdInd'])
     cnt =  md(self.token['text']) 
     return self.renderer.drop(self.token['hdInd'],self.token['title'],self.token['level'],self.token['option'],cnt);    
        
@@ -76,6 +76,8 @@ class Markdown(mistune.Markdown):
 
     def __init__(self, renderer=None, inline=None, block=None, hn="_drop", **kwargs):
 
+        self.hn = hn
+    
         if not renderer:
             renderer = Renderer(**kwargs)
         else:
