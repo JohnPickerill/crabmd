@@ -4,8 +4,24 @@ import crabmd as mistune
 root = os.path.dirname(__file__)
  
 known = []
+
+styles = {
+      "legal_italic":{
+      "span":"i",
+      "block":"legal_italic",
+      "class":"g_legal_italic",
+      "purpose":"Italics required to match prescribed formatting in legislation, documents or forms"},  
+
+      "legal_bold":{
+      "span":"b",
+      "block":"legal_bold",
+      "class":"g_legal_bold",
+      "purpose":"Bold required to match prescribed formatting in legislation, documents or forms"}
+    }
+
 m = mistune.Markdown()
- 
+
+
 def render(folder, name):
     filepath = os.path.join(folder, name + '.text')
     with open(filepath) as f:
@@ -30,20 +46,16 @@ def render(folder, name):
 
 
 def listdir(folder):
-    folder = os.path.join(root, 'fixtures', folder)
+    folder = os.path.join(root, 'crabmd_fixtures', folder)
     files = os.listdir(folder)
     files = filter(lambda o: o.endswith('.text'), files)
     names = map(lambda o: o[:-5], files)
     return folder, names
 
 
-def test_extra():
-    folder, names = listdir('extra')
+def test_crab():
+    folder, names = listdir('crab')
     for key in names:
         yield render, folder, key
 
 
-def test_normal():
-    folder, names = listdir('normal')
-    for key in names:
-        yield render, folder, key

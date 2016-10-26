@@ -1,6 +1,5 @@
 import crabmd as mistune
 
-
 def test_box():
     str = \
 '''
@@ -14,7 +13,7 @@ box!s}}
     if ret != html:
         raise ValueError("\ngot:\n{0} \nexpected:\n{1}".format(ret,html))
 
- 
+
 
 def test_table():
     str = \
