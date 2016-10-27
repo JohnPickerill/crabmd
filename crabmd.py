@@ -17,7 +17,7 @@ import posixpath
 
  
 
-__version__ = '0.0.7'
+__version__ = '0.0.8'
 __author__ = 'John Pickerill <me@curiouscrab.com>'
 __all__ = [
     'BlockGrammar', 'BlockLexer',
@@ -192,8 +192,7 @@ class Renderer(mistune.Renderer):
  
     def wiki_link(self, text, link):
         # TODO this needs to be done at init time
-        reSnippet = re.compile(r'@(\S{3}):(\S+)')
-             
+        reSnippet = re.compile(r'@(\S{3}):(\S+)')  
         matchObj= _reUrl.match(link)
         text = mistune.escape(text, quote=True)
         if matchObj is None: 
@@ -206,10 +205,10 @@ class Renderer(mistune.Renderer):
             else:
                 snipType = m.group(1)
                 snipId = m.group(2)         
-                url =  '<span class= "cc-snip"' 
-                + ' data-type = "' + snipType 
-                + '" data-url = "' + self.url_for("displaySnip", id = snipId, type=snipType) 
-                + '">[snip:' + snipType + ':' + snipId +'] </span>'
+                url =  '<span class= "cc-snip" data-type ="' + snipType 
+                url += '" data-url = "' 
+                url += self.url_for("displaySnip", id = snipId, type=snipType) 
+                url += '">[snip:' + snipType + ':' + snipId +'] </span>'
         else:
             url = '<a target ="_self" href="%s">%s</a>' % (matchObj.group(), text)
         return url
@@ -335,7 +334,6 @@ class InlineLexer(mistune.InlineLexer):
     def output_anchor(self,m):
         name = m.group(1)
         return self.renderer.anchor(name)        
-        
         
         
         
