@@ -17,7 +17,7 @@ import posixpath
 
  
 
-__version__ = '0.0.5'
+__version__ = '0.0.7'
 __author__ = 'John Pickerill <me@curiouscrab.com>'
 __all__ = [
     'BlockGrammar', 'BlockLexer',
@@ -61,7 +61,10 @@ def output_blk(self):
     
 def output_box(self):
     return self.renderer.box(self.token['option'],self.token['text']);    
-    
+ 
+def output_graph(self):
+    return self.renderer.graph(self.token['option'],self.token['text']);    
+ 
 def output_item(self):
     return self.renderer.item(self.token['item'],self.token['option'])
 
@@ -106,7 +109,8 @@ class Markdown(mistune.Markdown):
         Markdown.output_drop = output_drop
         Markdown.output_blk = output_blk
         Markdown.output_item = output_item
-        Markdown.output_box = output_box           
+        Markdown.output_box = output_box        
+        Markdown.output_graph = output_graph     
         super(Markdown, self).__init__(renderer=renderer, inline=inline, block=block, **kwargs)         
 
     
@@ -133,7 +137,7 @@ class Renderer(mistune.Renderer):
         super(Renderer,self).__init__(**kwargs)
  
     def graph(self,option,code): 
-        return '<div class="mermaid">' + code + '</div>'
+        return '\n<div class="mermaid">graph TD\n' + code + '</div>\n'
     
         
  

@@ -13,7 +13,21 @@ box!s}}
     if ret != html:
         raise ValueError("\ngot:\n{0} \nexpected:\n{1}".format(ret,html))
 
-
+def test_box():
+    str = \
+'''
+{{graph!s:
+Stop --> Start
+graph!s}}
+'''  
+    html = \
+'''
+<div class="mermaid">Graph TD
+Stop --> Start</div>
+'''    
+    ret = mistune.markdown(str, escape=True)
+    if ret != html:
+        raise ValueError("\ngot:\n{0} \nexpected:\n{1}".format(ret,html))
 
 def test_table():
     str = \

@@ -54,7 +54,7 @@ def listdir(folder):
 
 
 def test_crab():
-    folder, names = listdir('crab')
+    folder, names = listdir('crabmd')
     for key in names:
         yield render, folder, key
 
