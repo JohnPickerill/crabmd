@@ -34,9 +34,9 @@ def test_safe_links():
     )
     for vector, expected in attack_vectors:
         # image
-        assert 'src="%s"' % expected in mistune.markdown('![atk](%s)' % vector)
+        assert 'src="%s"' % expected in mistune.markdown('![atk](%s)' % vector, testmode=True)
         # link
-        assert 'href="%s"' % expected in mistune.markdown('[atk](%s)' % vector)
+        assert 'href="%s"' % expected in mistune.markdown('[atk](%s)' % vector, testmode=True)
 
 
 def test_skip_style():
@@ -56,7 +56,7 @@ def test_use_xhtml():
     assert '<br />' in ret
 
     ret = mistune.markdown('![foo](bar "title")', use_xhtml=True)
-    assert '<img src="bar" alt="foo" title="title" />' in ret
+    assert '<img class="cc_img" src="images/bar" alt="foo" title="title" />' in ret
 
 
 def test_parse_inline_html():

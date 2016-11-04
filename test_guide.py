@@ -6,9 +6,9 @@ def test_box():
 {{box!s:
 s
 box!s}}
-'''  
+'''
     html = \
-'''<pre><jpc>s</jpc></pre>'''    
+'''<pre><jpc>s</jpc></pre>'''
     ret = mistune.markdown(str, escape=True)
     if ret != html:
         raise ValueError("\ngot:\n{0} \nexpected:\n{1}".format(ret,html))
@@ -19,12 +19,12 @@ def test_box():
 {{graph!s:
 Stop --> Start
 graph!s}}
-'''  
+'''
     html = \
 '''
-<div class="mermaid">Graph TD
+<div class="mermaid">graph TD
 Stop --> Start</div>
-'''    
+'''
     ret = mistune.markdown(str, escape=True)
     if ret != html:
         raise ValueError("\ngot:\n{0} \nexpected:\n{1}".format(ret,html))
@@ -34,8 +34,8 @@ def test_table():
 '''
 john | was | here
 ---- | --- | ----
-A    | b   | c 
-'''  
+A    | b   | c
+'''
     html = \
 '''<table class="table table-striped table-bordered">
 <thead><tr>
@@ -48,11 +48,11 @@ A    | b   | c
 <tr>
 <td>A</td>
 <td>b</td>
-<td>c </td>
+<td>c</td>
 </tr>
 </tbody>
 </table>
-'''    
+'''
     ret = mistune.markdown(str, escape=True)
     if ret != html:
         raise ValueError("\ngot:\n{0} \nexpected:\n{1}".format(ret,html))
@@ -63,7 +63,7 @@ def test_blk():
           "span":"i",
           "block":"legal_italic",
           "class":"g_legal_italic",
-          "purpose":"Italics required to match prescribed formatting in legislation, documents or forms"},  
+          "purpose":"Italics required to match prescribed formatting in legislation, documents or forms"},
 
           "legal_bold":{
           "span":"b",
@@ -71,29 +71,29 @@ def test_blk():
           "class":"g_legal_bold",
           "purpose":"Bold required to match prescribed formatting in legislation, documents or forms"}
         }
-        
+
 
     str = \
 '''
-{{blk!l:    
+{{blk!l:
 default
 blk!l}}
-{{blk!legal_italic:    
+{{blk!legal_italic:
 John
 blk!legal_italic}}
-'''  
+'''
     html = \
 '''<div class="g_default"><p>default</p>
 </div><div class="g_legal_italic"><p>John</p>
-</div>'''    
+</div>'''
     ret = mistune.markdown(str, styles = styles,  escape=True)
     if ret != html:
         raise ValueError("\ngot:\n{0} \nexpected:\n{1}".format(ret,html))
-        
-        
-        
-        
-       
-test_box() 
+
+
+
+
+
+test_box()
 test_table()
-test_blk() 
+test_blk()

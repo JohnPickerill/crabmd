@@ -2,7 +2,7 @@ import os
 import re
 import crabmd as mistune
 root = os.path.dirname(__file__)
- 
+
 known = []
 
 styles = {
@@ -10,7 +10,7 @@ styles = {
       "span":"i",
       "block":"legal_italic",
       "class":"g_legal_italic",
-      "purpose":"Italics required to match prescribed formatting in legislation, documents or forms"},  
+      "purpose":"Italics required to match prescribed formatting in legislation, documents or forms"},
 
       "legal_bold":{
       "span":"b",
@@ -57,5 +57,3 @@ def test_crab():
     folder, names = listdir('crabmd')
     for key in names:
         yield render, folder, key
-
-
