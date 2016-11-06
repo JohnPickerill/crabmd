@@ -17,7 +17,7 @@ import posixpath
 
 
 
-__version__ = '0.0.7'
+__version__ = '0.0.9'
 __author__ = 'John Pickerill <me@curiouscrab.com>'
 __all__ = [
     'BlockGrammar', 'BlockLexer',
@@ -133,6 +133,8 @@ class Renderer(mistune.Renderer):
         else:
             self._static = ""
 
+        #TODO this is a quick way of making the mistune tests pass - we should actually have a generic way of 
+        #incorporating bootstrap capabilities and css styles
         if kwargs.get('testmode', False) == True:
             self._blank = " "
             self._top = " "
@@ -263,7 +265,7 @@ class Renderer(mistune.Renderer):
         :param title: title text of the image.
         :param text: alt text of the image.
         """
-        #TODO whats this about looks like it will fail the routine
+        #TODO don't understand why the next 2 lines are different from the original mistune
         src = mistune.escape_link(src, quote=True)
         if src.lower().startswith('javascript:'):
             src = ''
