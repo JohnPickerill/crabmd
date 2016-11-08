@@ -100,6 +100,7 @@ def run_setup(with_binary):
         long_description=fread('README.rst'),
         license='BSD',
         py_modules=['crabmd'],
+        install_requires=['mistune'],
         cmdclass=cmdclass,
         ext_modules=ext_modules,
         zip_safe=False,

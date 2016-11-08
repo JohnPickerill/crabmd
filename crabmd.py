@@ -17,7 +17,7 @@ import posixpath
 
 
 
-__version__ = '0.0.9'
+__version__ = '0.0.10'
 __author__ = 'John Pickerill <me@curiouscrab.com>'
 __all__ = [
     'BlockGrammar', 'BlockLexer',
@@ -222,9 +222,9 @@ class Renderer(mistune.Renderer):
                 snipType = m.group(1)
                 snipId = m.group(2)
                 url =  '<span class= "cc-snip"'
-                + ' data-type = "' + snipType
-                + '" data-url = "' + self.url_for("displaySnip", id = snipId, type=snipType)
-                + '">[snip:' + snipType + ':' + snipId +'] </span>'
+                url +git@gitlab.com:JohnPickerill/guide.git= ' data-type = "' + snipType
+                url += '" data-url = "' + self.url_for("displaySnip", id = snipId, type=snipType)
+                url += '">[snip:' + snipType + ':' + snipId +'] </span>'
         else:
             url = '<a target ="_self" href="%s">%s</a>' % (matchObj.group(), text)
         return url
