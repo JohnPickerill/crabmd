@@ -17,7 +17,7 @@ import posixpath
 
 
 
-__version__ = '0.0.10'
+__version__ = '0.0.11'
 __author__ = 'John Pickerill <me@curiouscrab.com>'
 __all__ = [
     'BlockGrammar', 'BlockLexer',
@@ -136,12 +136,14 @@ class Renderer(mistune.Renderer):
         #TODO this is a quick way of making the mistune tests pass - we should actually have a generic way of 
         #incorporating bootstrap capabilities and css styles
         if kwargs.get('testmode', False) == True:
+            self.testmode = True
             self._blank = " "
             self._top = " "
             self._table = ""
             self._img = " "
             self._images = ""
         else:
+            self.testmode = False
             self._blank = ' target="_blank" '
             self._top = ' target="_top" '
             self._table = ' class="table table-striped table-bordered"'
@@ -222,7 +224,7 @@ class Renderer(mistune.Renderer):
                 snipType = m.group(1)
                 snipId = m.group(2)
                 url =  '<span class= "cc-snip"'
-                url +git@gitlab.com:JohnPickerill/guide.git= ' data-type = "' + snipType
+                url += ' data-type = "' + snipType
                 url += '" data-url = "' + self.url_for("displaySnip", id = snipId, type=snipType)
                 url += '">[snip:' + snipType + ':' + snipId +'] </span>'
         else:
@@ -240,17 +242,24 @@ class Renderer(mistune.Renderer):
         :param text: text content for description.
         """
         link = mistune.escape_link(link, quote=True)
-        matchObj= _reUrl.match(link)
+
 
         # If its a bare word then its an article to be rendered in the current browser tab
         # If its full url its external and should be rendered in a seperate browser tab
         # If its begins with a / then it should be fetched from the static content store and rendered in another browser tab
+         
+        if not self.testmode:
+            matchObj= _reUrl.match(link)
+            if matchObj is None:
+                if ((len(link) > 0) and (link[0] != '/')):
+                    title = 'title="{0}"'.format("link to article - scoping para here") 
+                    url = self.url_for("displayArticle",itemid = link.strip()).replace('%23','#')
+                    return '<a {0} href="{1}" {2} >{3}</a>'.format(self._top,url,title,text)
+                else:
+                    if len(self._static) > 0:
+                        link=link.strip('/')
+                    link = urlparse.urljoin(self._static, link[0:])
 
-        if matchObj is None:
-            if ((len(link) > 0) and (link[0] != '/')):
-                return '<a %s href="' % (self._top) + self.url_for("displayArticle",itemid = link.strip()).replace('%23','#') +'">' + text + '</a>'
-            else:
-                link = urlparse.urljoin(self._static, link[0:])
 
         if not title:
             return '<a%s href="%s">%s</a>' % (self._blank, link, text)

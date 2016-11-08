@@ -19,7 +19,11 @@ styles = {
       "purpose":"Bold required to match prescribed formatting in legislation, documents or forms"}
     }
 
-m = mistune.Markdown()
+def url_for(*args, **kwargs):
+    return "/article/"
+        
+KM_STATIC = 'http://workspaces/P299KMProjectTeam/Guidance%20content/'    
+m = mistune.Markdown(hn="hotdrop", url_for=url_for , static = KM_STATIC)
 
 
 def render(folder, name):
