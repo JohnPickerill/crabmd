@@ -20,7 +20,13 @@ styles = {
     }
 
 def url_for(*args, **kwargs):
-    return "/article/"
+    url = '/url'
+    for x in args:
+        url += '/' + x
+    for x in kwargs.values(): 
+        url += '/' + x
+        
+    return url
         
 KM_STATIC = 'http://workspaces/P299KMProjectTeam/Guidance%20content/'    
 m = mistune.Markdown(hn="hotdrop", url_for=url_for , static = KM_STATIC)
