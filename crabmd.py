@@ -17,7 +17,7 @@ import posixpath
 
 
 
-__version__ = '0.0.14'
+__version__ = '0.0.15'
 __author__ = 'John Pickerill <me@curiouscrab.com>'
 __all__ = [
     'BlockGrammar', 'BlockLexer',
@@ -258,14 +258,15 @@ class Renderer(mistune.Renderer):
         # If its full url its external and should be rendered in a seperate browser tab
         # If its begins with a / then it should be fetched from the static content store and rendered in another browser tab
          
-        #TODO put in a friendly title and text if they are blank  
+        #TODO put in a friendly title and text if they are blank 
+        target = self._blank
+        
         if not self.testmode:  
             matchObj= _reUrl.match(link)
             if matchObj is None:
                 matchObj = _reEmail.match(link)            
                 if not matchObj is None: 
-                    print ("email found")
-                    pass
+                    target = self._top # emails shouldn't open new tab/window, at least not if we're using outlook 
                 else:
                     if ((len(link) > 0) and (link[0] != '/')):
                         title = u'title="{0}"'.format("link to article - scoping para here") 
@@ -278,9 +279,9 @@ class Renderer(mistune.Renderer):
             
                
         if not title:
-            return '<a%s href="%s">%s</a>' % (self._blank, link, text)
+            return '<a%s href="%s">%s</a>' % (target, link, text)
         title = mistune.escape(title, quote=True)
-        return '<a%s href="%s" title="%s">%s</a>' % (self._blank, link, title, text)
+        return '<a%s href="%s" title="%s">%s</a>' % (target, link, title, text)
 
 
 
