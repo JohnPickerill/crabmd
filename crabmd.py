@@ -17,7 +17,7 @@ import posixpath
 
 
 
-__version__ = '0.0.11'
+__version__ = '0.0.17'
 __author__ = 'John Pickerill <me@curiouscrab.com>'
 __all__ = [
     'BlockGrammar', 'BlockLexer',
@@ -32,7 +32,8 @@ blk_class = {}
         # TODO should switch to 'https?:\/\/[^\s\/$.?#].[^\s]*$ as the one below fails www.english-heritage.uk
         #'https://mathiasbynens.be/demo/url-regex
 _reUrl = re.compile(r'^https?:\/\/(-\.)?([^\s\/?\.#-]+\.?)+(\/[^\s]*)?$')
-
+_reEmail = re.compile(r'^(mailto\:)?[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$',re.IGNORECASE)
+_reSnippet = re.compile(r'@(\S{3}):(\S+)')
 
 def url_for(*args, **kwargs):
     return kwargs['itemid']
@@ -145,7 +146,7 @@ class Renderer(mistune.Renderer):
         else:
             self.testmode = False
             self._blank = ' target="_blank" '
-            self._top = ' target="_top" '
+            self._top = ' target="_top" '   # TODO this probably should be _self
             self._table = ' class="table table-striped table-bordered"'
             self._img = ' class="cc_img" '
             self._images = "images"
@@ -154,7 +155,7 @@ class Renderer(mistune.Renderer):
         super(Renderer,self).__init__(**kwargs)
 
     def graph(self,option,code):
-        return '\n<div class="mermaid">graph TD\n' + code + '</div>\n'
+        return '\n<div class="algorithm">graph TD\n' + code + '</div>\n'
 
 
 
@@ -208,17 +209,26 @@ class Renderer(mistune.Renderer):
         return it
 
     def wiki_link(self, text, link):
-        # TODO this needs to be done at init time
-        reSnippet = re.compile(r'@(\S{3}):(\S+)')
+ 
+        # most likely a snippet so do first
+        m = _reSnippet.match(link)
+        if not m is None:
+                snipType = m.group(1)
+                snipId = m.group(2)
+                url =  '<span class= "cc-snip"'
+                url += ' data-type = "' + snipType
+                url += '" data-url = "' + self.url_for("displaySnip", id = snipId, type=snipType)
+                url += '">[snip:' + snipType + ':' + snipId +'] </span>'       
+                return url
+        return self.link(link,title="link to ",text=text) 
 
-        matchObj= _reUrl.match(link)
+            
         text = mistune.escape(text, quote=True)
         if matchObj is None:
-
             #TODO add snippet text here ?? lets say text beginning with @ is a snippet we need functions that return the html for a article link or a shippet
             #url = '<a  target="_blank" href ="' + url_for("displayArticle",itemid = link.strip()) +'">' + text + '</a>'
-            m = reSnippet.match(link)
-            if m is None:
+            m = _reSnippet.match(link)
+            if m is None:                
                 url = '<a  target="_top" href ="' + self.url_for("displayArticle",itemid = link.strip()).replace('%23','#') +'">' + text + '</a>'
             else:
                 snipType = m.group(1)
@@ -248,23 +258,30 @@ class Renderer(mistune.Renderer):
         # If its full url its external and should be rendered in a seperate browser tab
         # If its begins with a / then it should be fetched from the static content store and rendered in another browser tab
          
-        if not self.testmode:
+        #TODO put in a friendly title and text if they are blank 
+        target = self._blank
+        
+        if not self.testmode:  
             matchObj= _reUrl.match(link)
             if matchObj is None:
-                if ((len(link) > 0) and (link[0] != '/')):
-                    title = 'title="{0}"'.format("link to article - scoping para here") 
-                    url = self.url_for("displayArticle",itemid = link.strip()).replace('%23','#')
-                    return '<a {0} href="{1}" {2} >{3}</a>'.format(self._top,url,title,text)
+                matchObj = _reEmail.match(link)            
+                if not matchObj is None: 
+                    target = self._top # emails shouldn't open new tab/window, at least not if we're using outlook 
                 else:
-                    if len(self._static) > 0:
-                        link=link.strip('/')
-                    link = urlparse.urljoin(self._static, link[0:])
-
-
+                    if ((len(link) > 0) and (link[0] != '/')):
+                        title = u'title="{0}"'.format("link to article - scoping para here") 
+                        url = self.url_for("displayArticle",itemid = link.strip()).replace('%23','#')
+                        return u'<a {0} href="{1}" {2} >{3}</a>'.format(self._top,url,title,text)
+                    else:
+                        if len(self._static) > 0:
+                            link=link.strip('/')
+                        link = urlparse.urljoin(self._static, link[0:])
+            
+               
         if not title:
-            return '<a%s href="%s">%s</a>' % (self._blank, link, text)
+            return '<a%s href="%s">%s</a>' % (target, link, text)
         title = mistune.escape(title, quote=True)
-        return '<a%s href="%s" title="%s">%s</a>' % (self._blank, link, title, text)
+        return '<a%s href="%s" title="%s">%s</a>' % (target, link, title, text)
 
 
 
