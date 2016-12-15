@@ -17,7 +17,8 @@ import posixpath
 
 
 
-__version__ = '0.0.15'
+ 
+__version__ = '0.0.17'
 __author__ = 'John Pickerill <me@curiouscrab.com>'
 __all__ = [
     'BlockGrammar', 'BlockLexer',
@@ -155,7 +156,7 @@ class Renderer(mistune.Renderer):
         super(Renderer,self).__init__(**kwargs)
 
     def graph(self,option,code):
-        return '\n<div class="mermaid">graph TD\n' + code + '</div>\n'
+        return '\n<div class="algorithm">graph TD\n' + code + '</div>\n'
 
 
 
