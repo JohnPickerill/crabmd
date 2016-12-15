@@ -17,6 +17,7 @@ import posixpath
 
 
 
+ 
 __version__ = '0.0.17'
 __author__ = 'John Pickerill <me@curiouscrab.com>'
 __all__ = [
