@@ -29,7 +29,7 @@ def url_for(*args, **kwargs):
     return url
         
 KM_STATIC = 'http://workspaces/P299KMProjectTeam/Guidance%20content/'    
-m = mistune.Markdown(hn="hotdrop", url_for=url_for , static = KM_STATIC)
+m = mistune.Markdown(hn="hotdrop", url_for=url_for ,styles = styles, static = KM_STATIC)
 
 
 def render(folder, name):
