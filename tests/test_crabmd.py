@@ -19,10 +19,18 @@ styles = {
       "purpose":"Bold required to match prescribed formatting in legislation, documents or forms"}
     }
 
-def url_for(*args, **kwargs):
-    url = '/url'
-    for x in args:
-        url += '/' + x
+def url_for(endpoint, **kwargs):
+    url = '/url/' + endpoint
+     
+    if endpoint == "displaySnip":
+        url += '/' + kwargs['type'] + '/' + kwargs['id']
+        
+        return url
+        
+    if endpoint == "displayArticle":
+        url += '/' + kwargs['itemid']
+        return url
+        
     for x in kwargs.values(): 
         url += '/' + x
         
