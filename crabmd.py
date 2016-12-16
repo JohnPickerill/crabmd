@@ -2,7 +2,11 @@ import mistune
 import re
 import inspect
 import copy
-import urlparse
+try:
+    import urlparse
+except: 
+    import urllib.parse as urlparse
+    
 import posixpath
 """
     guidemd
@@ -13,12 +17,13 @@ import posixpath
     Based on and dependant on mistune :copyright: (c) 2014 - 2015 by Hsiaoming Yang.
 """
 
+#TODO I'm unconvinced about the use of URLPARSE and whether its doing what was intended
+
+
 #TODO disable embedded HTML ?
 
-
-
  
-__version__ = '0.0.17'
+__version__ = '0.0.18'
 __author__ = 'John Pickerill <me@curiouscrab.com>'
 __all__ = [
     'BlockGrammar', 'BlockLexer',
@@ -42,7 +47,7 @@ def url_for(*args, **kwargs):
 def set_styles(styles):
     global span_class
     global blk_class
-    for key,value in styles.iteritems():
+    for key,value in styles.items():
         if value['span'] != "":
             span_class[value['span']] = value['class']
         if value['block'] != "":
