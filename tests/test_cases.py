@@ -6,6 +6,7 @@ root = os.path.dirname(__file__)
 known = []
 m = mistune.Markdown(testmode=True)
 
+
 def render(folder, name):
     filepath = os.path.join(folder, name + '.text')
     with open(filepath) as f:

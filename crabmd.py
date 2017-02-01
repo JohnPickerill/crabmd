@@ -23,8 +23,8 @@ import posixpath
 #TODO disable embedded HTML ?
 
  
-__version__ = '0.0.18'
-__author__ = 'John Pickerill <me@curiouscrab.com>'
+__version__ = '0.0.19'
+__author__ = 'John Pickerill <john.pickerill@landregistry.gov.uk>'
 __all__ = [
     'BlockGrammar', 'BlockLexer',
     'InlineGrammar', 'InlineLexer',
