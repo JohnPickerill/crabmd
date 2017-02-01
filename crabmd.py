@@ -4,9 +4,9 @@ import inspect
 import copy
 try:
     import urlparse
-except: 
+except:
     import urllib.parse as urlparse
-    
+
 import posixpath
 """
     guidemd
@@ -17,65 +17,71 @@ import posixpath
     Based on and dependant on mistune :copyright: (c) 2014 - 2015 by Hsiaoming Yang.
 """
 
-#TODO I'm unconvinced about the use of URLPARSE and whether its doing what was intended
+# JP TODO I'm unconvinced about the use of URLPARSE and whether its doing what was intended
 
 
-#TODO disable embedded HTML ?
+# JP TODO disable embedded HTML ?
 
- 
 __version__ = '0.0.19'
 __author__ = 'John Pickerill <john.pickerill@landregistry.gov.uk>'
 __all__ = [
     'BlockGrammar', 'BlockLexer',
     'InlineGrammar', 'InlineLexer',
-    'Renderer', 'Markdown',
-    'markdown', 'escape',
+    'Renderer', 'Markdown'
 ]
 
 span_class = {}
 blk_class = {}
 
-        # TODO should switch to 'https?:\/\/[^\s\/$.?#].[^\s]*$ as the one below fails www.english-heritage.uk
-        #'https://mathiasbynens.be/demo/url-regex
+# TODO should switch to 'https?:\/\/[^\s\/$.?#].[^\s]*$ as the one below fails www.english-heritage.uk
+# 'https://mathiasbynens.be/demo/url-regex
 _reUrl = re.compile(r'^https?:\/\/(-\.)?([^\s\/?\.#-]+\.?)+(\/[^\s]*)?$')
-_reEmail = re.compile(r'^(mailto\:)?[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$',re.IGNORECASE)
+_reEmail = re.compile(r'^(mailto\:)?[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$', re.IGNORECASE)
 _reSnippet = re.compile(r'@(\S{3}):(\S+)')
+
 
 def url_for(*args, **kwargs):
     return kwargs['itemid']
 
+
 def set_styles(styles):
     global span_class
     global blk_class
-    for key,value in styles.items():
+    for key, value in styles.items():
         if value['span'] != "":
             span_class[value['span']] = value['class']
         if value['block'] != "":
             blk_class[value['block']] = value['class']
 
+
 def output_drop(self):
     hdInd = hotdropIndex(self)
-    if ((self.token['hdInd'] is None) or (not self.token['hdInd'].startswith("_") )):
+    if ((self.token['hdInd'] is None) or (not self.token['hdInd'].startswith("_"))):
         self.token['hdInd'] = hdInd
-    md = Markdown(hn=self.token['hdInd'],**self.kwargs) # TODO what if using custom renderers or lexers
-    cnt =  md(self.token['text'])
-    return self.renderer.drop(self.token['hdInd'],self.token['title'],self.token['level'],self.token['option'],cnt);
+    md = Markdown(hn=self.token['hdInd'], **self.kwargs)  # TODO what if using custom renderers or lexers
+    cnt = md(self.token['text'])
+    return self.renderer.drop(self.token['hdInd'], self.token['title'], self.token['level'], self.token['option'], cnt)
+
 
 def output_blk(self):
-    md = Markdown(**self.kwargs) #TODO what about drops  see above
-    cnt =  md(self.token['text'])
-    return self.renderer.blk(self.token['option'],cnt);
+    md = Markdown(**self.kwargs)  # TODO what about drops  see above
+    cnt = md(self.token['text'])
+    return self.renderer.blk(self.token['option'], cnt)
+
 
 def output_box(self):
-    return self.renderer.box(self.token['option'],self.token['text']);
+    return self.renderer.box(self.token['option'], self.token['text'])
+
 
 def output_graph(self):
-    return self.renderer.graph(self.token['option'],self.token['text']);
+    return self.renderer.graph(self.token['option'], self.token['text'])
+
 
 def output_item(self):
-    return self.renderer.item(self.token['item'],self.token['option'])
+    return self.renderer.item(self.token['item'], self.token['option'])
 
-def  hotdropIndex(self):
+
+def hotdropIndex(self):
     self.hi = self.hi + 1
     return self.hn + "_" + str(self.hi)
 
@@ -87,7 +93,7 @@ class Markdown(mistune.Markdown):
     hi = 0
     hn = ""
 
-    def __init__(self, renderer=None, inline=None, block=None, hn = "drop", **kwargs):
+    def __init__(self, renderer=None, inline=None, block=None, hn="drop", **kwargs):
 
         self.hn = hn
         self.kwargs = kwargs
@@ -125,8 +131,7 @@ class Renderer(mistune.Renderer):
     hn = "hd"
     hi = 0
 
-
-    def __init__(self, hn="hdx" , **kwargs):
+    def __init__(self, hn="hdx", **kwargs):
 
         f = kwargs.get('url_for')
 
@@ -140,9 +145,9 @@ class Renderer(mistune.Renderer):
         else:
             self._static = ""
 
-        #TODO this is a quick way of making the mistune tests pass - we should actually have a generic way of 
-        #incorporating bootstrap capabilities and css styles
-        if kwargs.get('testmode', False) == True:
+        # TODO this is a quick way of making the mistune tests pass - we should actually have a generic way of
+        # incorporating bootstrap capabilities and css styles
+        if kwargs.get('testmode', False):
             self.testmode = True
             self._blank = " "
             self._top = " "
@@ -158,14 +163,12 @@ class Renderer(mistune.Renderer):
             self._images = "images"
 
         self.hn = hn
-        super(Renderer,self).__init__(**kwargs)
+        super(Renderer, self).__init__(**kwargs)
 
-    def graph(self,option,code):
+    def graph(self, option, code):
         return '\n<div class="algorithm">graph TD\n' + code + '</div>\n'
 
-
-
-    def box (self,option,text):
+    def box(self, option, text):
         return '<pre><jpc>' + text + '</jpc></pre>'
 
     def table(self, header, body):
@@ -181,18 +184,18 @@ class Renderer(mistune.Renderer):
     def spanFormat(self, option, text):
         return '<span class=%s>%s</span>' % (option, text)
 
-    def anchor(self,name):
+    def anchor(self, name):
         return '<a id="%s"></a>' % (name)
 
-    def blk (self,option,text):
+    def blk(self, option, text):
         return '<div class="' + option + '">' + text + '</div>'
 
-    def drop (self,hdInd,title,level,option,text):
+    def drop(self, hdInd, title, level, option, text):
         if level == 0:
             stag = '<p>'
             etag = '</p>'
         else:
-            stag ='<h' + str(level) + ' class="cc-drop-title">'
+            stag = '<h' + str(level) + ' class="cc-drop-title">'
             etag = '</h' + str(level) + ' >'
 
         options = "accordion"
@@ -200,55 +203,30 @@ class Renderer(mistune.Renderer):
         for o in opts:
             options += " cc-drop-%s" % (o)
 
-        hd = '<div class="%s" id="info%s">\n<div class="accordion-group ">\n<div class="cc-drop-head">\n'  %(options,hdInd )
-        hd += '%s<a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#info%s" href="#%s">\n' %(stag,hdInd,hdInd)
-        hd += '%s</a>%s</div>\n'  % (title,etag)
-        hd += '<div id="%s" class="accordion-body collapse">\n<div class="accordion-inner cc-drop-body">\n%s' %(hdInd, text)
+        hd = '<div class="%s" id="info%s">\n<div class="accordion-group ">\n<div class="cc-drop-head">\n' % (options, hdInd)
+        hd += '%s<a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#info%s" href="#%s">\n' % (stag, hdInd, hdInd)
+        hd += '%s</a>%s</div>\n' % (title, etag)
+        hd += '<div id="%s" class="accordion-body collapse">\n<div class="accordion-inner cc-drop-body">\n%s' % (hdInd, text)
         hd += '</div></div></div></div>\n <!--hd end-->'
 
         return hd
 
-
-
-    def item (self,item,option):
-        it = '<< included item :' + item  +  ' >>'
+    def item(self, item, option):
+        it = '<< included item :' + item + ' >>'
         return it
 
     def wiki_link(self, text, link):
- 
         # most likely a snippet so do first
         m = _reSnippet.match(link)
-        if not m is None:
+        if m is not None:
                 snipType = m.group(1)
                 snipId = m.group(2)
-                url =  '<span class= "cc-snip"'
+                url = '<span class= "cc-snip"'
                 url += ' data-type = "' + snipType
-                url += '" data-url = "' + self.url_for("displaySnip", id = snipId, type=snipType)
-                url += '">[snip:' + snipType + ':' + snipId +'] </span>'       
+                url += '" data-url = "' + self.url_for("displaySnip", id=snipId, type=snipType)
+                url += '">[snip:' + snipType + ':' + snipId + '] </span>'
                 return url
-        return self.link(link,title="link to ",text=text) 
-
-            
-        text = mistune.escape(text, quote=True)
-        if matchObj is None:
-            #TODO add snippet text here ?? lets say text beginning with @ is a snippet we need functions that return the html for a article link or a shippet
-            #url = '<a  target="_blank" href ="' + url_for("displayArticle",itemid = link.strip()) +'">' + text + '</a>'
-            m = _reSnippet.match(link)
-            if m is None:                
-                url = '<a  target="_top" href ="' + self.url_for("displayArticle",itemid = link.strip()).replace('%23','#') +'">' + text + '</a>'
-            else:
-                snipType = m.group(1)
-                snipId = m.group(2)
-                url =  '<span class= "cc-snip"'
-                url += ' data-type = "' + snipType
-                url += '" data-url = "' + self.url_for("displaySnip", id = snipId, type=snipType)
-                url += '">[snip:' + snipType + ':' + snipId +'] </span>'
-        else:
-            url = '<a target ="_self" href="%s">%s</a>' % (matchObj.group(), text)
-        return url
-
-
-
+        return self.link(link, title="link to ", text=text)
 
     def link(self, link, title, text):
         """Rendering a given link with content and title.
@@ -259,37 +237,33 @@ class Renderer(mistune.Renderer):
         """
         link = mistune.escape_link(link, quote=True)
 
-
         # If its a bare word then its an article to be rendered in the current browser tab
         # If its full url its external and should be rendered in a seperate browser tab
         # If its begins with a / then it should be fetched from the static content store and rendered in another browser tab
-         
-        #TODO put in a friendly title and text if they are blank 
+
+        # TODO put in a friendly title and text if they are blank
         target = self._blank
-        
-        if not self.testmode:  
-            matchObj= _reUrl.match(link)
+
+        if not self.testmode:
+            matchObj = _reUrl.match(link)
             if matchObj is None:
-                matchObj = _reEmail.match(link)            
-                if not matchObj is None: 
-                    target = self._top # emails shouldn't open new tab/window, at least not if we're using outlook 
+                matchObj = _reEmail.match(link)
+                if matchObj is not None:
+                    target = self._top  # emails shouldn't open new tab/window, at least not if we're using outlook
                 else:
                     if ((len(link) > 0) and (link[0] != '/')):
-                        title = u'title="{0}"'.format("link to article - scoping para here") 
-                        url = self.url_for("displayArticle",itemid = link.strip()).replace('%23','#')
-                        return u'<a {0} href="{1}" {2} >{3}</a>'.format(self._top,url,title,text)
+                        title = u'title="{0}"'.format("link to article - scoping para here")
+                        url = self.url_for("displayArticle", itemid=link.strip()).replace('%23', '#')
+                        return u'<a {0} href="{1}" {2} >{3}</a>'.format(self._top, url, title, text)
                     else:
                         if len(self._static) > 0:
-                            link=link.strip('/')
+                            link = link.strip('/')
                         link = urlparse.urljoin(self._static, link[0:])
-            
-               
+
         if not title:
             return '<a%s href="%s">%s</a>' % (target, link, text)
         title = mistune.escape(title, quote=True)
         return '<a%s href="%s" title="%s">%s</a>' % (target, link, title, text)
-
-
 
     def image(self, src, title, alt_text):
         """Rendering a image with title and text.
@@ -297,27 +271,27 @@ class Renderer(mistune.Renderer):
         :param title: title text of the image.
         :param text: alt text of the image.
         """
-        #TODO don't understand why the next 2 lines are different from the original mistune
+        # TODO don't understand why the next 2 lines are different from the original mistune
         src = mistune.escape_link(src, quote=True)
         if src.lower().startswith('javascript:'):
             src = ''
 
-#TODO refactor as common with wiki-link and pre-compile
+# TODO refactor as common with wiki-link and pre-compile
         # TODO should switch to 'https?:\/\/[^\s\/$.?#].[^\s]*$ as the one below fails www.english-heritage.uk
-        #'https://mathiasbynens.be/demo/url-regex
+        # 'https://mathiasbynens.be/demo/url-regex
 
-        #reUrl = re.compile(r'^https?:\/\/(-\.)?([^\s\/?\.#-]+\.?)+(\/[^\s]*)?$')
+        # reUrl = re.compile(r'^https?:\/\/(-\.)?([^\s\/?\.#-]+\.?)+(\/[^\s]*)?$')
 
-        matchObj= _reUrl.match(src)
-        #TODO originally relative images were relative to an image directory, and did not have a leading /
-        #TODO I am changing this so that relative paths for static server begin with a / and are relative to the base url not an image directory
-        #TODO the code that is to maintain compatibility will need to be removed/changed once the content is re-exported from word.
+        matchObj = _reUrl.match(src)
+        # JP TODO originally relative images were relative to an image directory, and did not have a leading /
+        # JP TODO I am changing this so that relative paths for static server begin with a / and are relative to the base url not an image directory
+        # JP TODO the code that is to maintain compatibility will need to be removed/changed once the content is re-exported from word.
 
         if matchObj is None:
-            if ((len(src) > 0) and (src[0] != '/') ):
-                src = urlparse.urljoin(self._static, posixpath.join( self._images,src))
+            if ((len(src) > 0) and (src[0] != '/')):
+                src = urlparse.urljoin(self._static, posixpath.join(self._images, src))
             else:
-                src = urlparse.urljoin(self._static, src[1:])
+                src = urlparse.urljoin(self. _static, src[1:])
 
         text = mistune.escape(alt_text, quote=True)
         if title:
@@ -330,30 +304,25 @@ class Renderer(mistune.Renderer):
         return '%s>' % html
 
 
-
-
-
 class InlineGrammar(mistune.InlineGrammar):
     wiki_link = re.compile(r'\[\[\s*([\S]+?)(?:\s*(?:\|| )([\s\S]+?))?\]\]')               # [[ link|text ]]
-    corres_tag = re.compile(r'<<') # pc corres indicators are actually <<.*>> but I think I can get away with just escaping the leading << - johnp
+    corres_tag = re.compile(r'<<')  # pc corres indicators are actually <<.*>> but I think I can get away with just escaping the leading << - johnp
     spanFormat = re.compile(r'^\!(\S)\!([\s\S]+?)\!:\!(?!\!)')
     anchor = re.compile(r'^\!\!\(([a-z,0-9]*)\)')
 
+
 class InlineLexer(mistune.InlineLexer):
     default_rules = copy.copy(mistune.InlineLexer.default_rules)
-
     default_rules.insert(1, 'wiki_link')
     default_rules.insert(1, 'corres_tag')
     default_rules.insert(1, 'spanFormat')
     default_rules.insert(1, 'anchor')
-
 
     def __init__(self, renderer, rules=None, **kwargs):
         if rules is None:
             # use the inline grammar
             rules = InlineGrammar()
         super(InlineLexer, self).__init__(renderer, rules, **kwargs)
-
 
     def output_wiki_link(self, m):
 
@@ -367,7 +336,7 @@ class InlineLexer(mistune.InlineLexer):
     def output_corres_tag(self, m):
         return "&lt&lt"
 
-    def output_spanFormat(self,m):
+    def output_spanFormat(self, m):
         global span_class
         cl = m.group(1)
         if cl in span_class:
@@ -377,28 +346,27 @@ class InlineLexer(mistune.InlineLexer):
 
         text = m.group(2)
         text = self.output(text)
-        return self.renderer.spanFormat(cls,text)
+        return self.renderer.spanFormat(cls, text)
 
-    def output_anchor(self,m):
+    def output_anchor(self, m):
         name = m.group(1)
         return self.renderer.anchor(name)
 
 
-
-
 class BlockGrammar(mistune.BlockGrammar):
-    blk  = re.compile(r'(?:^|\n){{blk!([a-zA-Z0-9-_]+):\s*\n([\s\S]*?)\n(?:blk!\1)}}[^\n]*(?:\n|$)')
-    box  = re.compile(r'(?:^|\n){{((box|graph)(?:![a-z]+)?):[ \t]*([a-zA-Z0-9 \t]*)\n([\s\S]*?)\n(?:\1)}}[^\n]*(?:\n|$)')
+    blk = re.compile(r'(?:^|\n){{blk!([a-zA-Z0-9-_]+):\s*\n([\s\S]*?)\n(?:blk!\1)}}[^\n]*(?:\n|$)')
+    box = re.compile(r'(?:^|\n){{((box|graph)(?:![a-z]+)?):[ \t]*([a-zA-Z0-9 \t]*)\n([\s\S]*?)\n(?:\1)}}[^\n]*(?:\n|$)')
     drop = re.compile(r'(?:^|\n){{(drop\!?(?:(?<=\!)([_a-z0-9]+))?):[ \t]*([a-zA-Z0-9 \t]*)\n([^\n]*)\n([\s\S]*?)\n\1}}[^\n]*(?:\n|$)')
-    #item = re.compile(r'(?:^|\n){{item:[ \t]*([\S]+)\s*(\S*)?\s*}}[^\n]*(?:\n|$)')
+    # item = re.compile(r'(?:^|\n){{item:[ \t]*([\S]+)\s*(\S*)?\s*}}[^\n]*(?:\n|$)')
 
-class BlockLexer(mistune.BlockLexer):
+
+class BlockLexer(mistune. BlockLexer):
     default_rules = copy.copy(mistune.BlockLexer.default_rules)
-    default_rules.insert(1,'box')
-    default_rules.insert(1,'blk')
-    default_rules.insert(1,'drop')
-    #default_rules.insert(1,'item')
-    default_rules.insert(1,'box')
+    default_rules.insert(1, 'box')
+    default_rules.insert(1, 'blk')
+    default_rules.insert(1, 'drop')
+    # default_rules.insert(1,'item')
+    default_rules.insert(1, 'box')
 
     def __init__(self,  rules=None, **kwargs):
         if rules is None:
@@ -406,10 +374,10 @@ class BlockLexer(mistune.BlockLexer):
             rules = BlockGrammar()
         super(BlockLexer, self).__init__(rules, **kwargs)
 
-    #TODO test invalid input ?
+    # TODO test invalid input ?
     def parse_box(self, m):
         src = m.group(0)
-        option =  m.group(3)
+        option = m.group(3)
         textstr = m.group(4)
         self.tokens.append({
             'type': m.group(2),
@@ -442,9 +410,9 @@ class BlockLexer(mistune.BlockLexer):
 
     def parse_drop(self, m):
         src = m.group(0)
-        if ((len(m.group(4)) > 0 ) and (len(m.group(5)) > 0)):
+        if ((len(m.group(4)) > 0) and (len(m.group(5)) > 0)):
             textstr = (m.group(5))
-            #TODO pre compile this
+            # TODO pre compile this
             r = re.compile(r'^ *(#{1,6}) *([^\n]+?) *#* *(?:\n+|$)')
             capt = r.match(m.group(4))
 
@@ -455,9 +423,8 @@ class BlockLexer(mistune.BlockLexer):
                 level = 0
                 title = m.group(4)
 
-
             self.tokens.append({
-                'hdInd' : m.group(2),
+                'hdInd': m.group(2),
                 'type': 'drop',
                 'option': m.group(3),
                 'level': level,

@@ -2,11 +2,6 @@
 # coding: utf-8
 from __future__ import print_function
 
-try:
-    # python setup.py test
-    import multiprocessing
-except ImportError:
-    pass
 
 import crabmd
 from setuptools import setup, Extension
